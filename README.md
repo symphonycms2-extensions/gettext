@@ -1,8 +1,8 @@
-# Static Resources
+# Language Parameters
 
-* Version: 1.0.0
+* Version: 1.1.0
 * Author: Remie Bolte <http://github.com/remie>
-* Build Date: 2011-09-05
+* Build Date: 2011-09-06
 * Requirements: Symphony 2.2.x, Language Redirect
 
 ## Description
@@ -19,7 +19,7 @@ This extension requires Symphony 2.2.x and the Language Redirect extension.
 ## Installation
 
 1. Download and install the Language Redirect extension
-2. Download the Static Resources extension and add it to your extensions folder using `staticresources` as the folder name
+2. Download the Language Parameters extension and add it to your extensions folder using `languageparameters` as the folder name
 3. Add an XML file in the Manifest folder called `staticresources.xml`
 4. Add parameters to your XML file (look at the Usage section below for more information)
 
@@ -83,4 +83,4 @@ to the top of your XSLT pages, to ensure that the parameter is declared.
 
 ## Roadmap and Version History
 
-Can be found on the GitHub repository: https://github.com/remie/StaticResources/issues
+Can be found on the GitHub repository: https://github.com/remie/LanguageParameters/issues

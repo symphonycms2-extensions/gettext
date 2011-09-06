@@ -1,18 +1,18 @@
 <?php
 
-	Class extension_staticresources extends Extension {
+	Class extension_languageparameters extends Extension {
 
 		public function about() {
 			return array(
-				'name'			=> 'Static Resources',
-				'version'		=> '0.9.0',
-				'release-date'	=> '2011-09-05',
+				'name'			=> 'Language Parameters',
+				'version'		=> '1.1.0',
+				'release-date'	=> '2011-09-06',
 				'author'		=> array(
 					'name'			=> 'Remie Bolte',
 					'email'			=> 'r.bolte@gmail.com',
-					'website'		=> 'https://github.com/remie/StaticResources'
+					'website'		=> 'https://github.com/remie/LanguageParameters'
 				),
-				'description'	=> 'Add parameters for multilingual static resources'
+				'description'	=> 'Brings multilingual parameters to your XSLT templates'
 			);
 		}
 
