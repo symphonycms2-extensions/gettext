@@ -1,18 +1,18 @@
 <?php
 
-	Class extension_languageparameters extends Extension {
+	Class extension_gettext extends Extension {
 
 		public function about() {
 			return array(
-				'name'			=> 'Language Parameters',
+				'name'			=> 'gettext',
 				'version'		=> '1.1.0',
 				'release-date'	=> '2011-09-06',
 				'author'		=> array(
 					'name'			=> 'Remie Bolte',
 					'email'			=> 'r.bolte@gmail.com',
-					'website'		=> 'https://github.com/remie/LanguageParameters'
+					'website'		=> 'https://github.com/remie/gettext'
 				),
-				'description'	=> 'Brings multilingual parameters to your XSLT templates'
+				'description'	=> 'Brings multilingual resource properties to your XSLT templates'
 			);
 		}
 
