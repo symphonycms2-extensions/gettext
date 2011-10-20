@@ -122,6 +122,7 @@
 			$resources = array();
 			for($i=0; $i < count($lines); $i++) {
 				$line = trim($lines[$i]);
+				if($line=='') { continue; }
 				
 				$name = trim(substr($line, 0, strpos($line,'=')));
 				$value = trim(substr($line, strpos($line,'=') + 1));
@@ -146,7 +147,9 @@
 					$i = $i + $lineCount;
 				}
 
-				$resources[$name] = $value;
+				if($name != '' && !isset($resources[$name])) {
+					$resources[$name] = $value;
+				}
 			}
 			
 			return $resources;
