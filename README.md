@@ -1,86 +1,195 @@
-# Language Parameters
+# gettext
 
-* Version: 1.1.0
+* Version: 2.0.0
 * Author: Remie Bolte <http://github.com/remie>
-* Build Date: 2011-09-06
-* Requirements: Symphony 2.2.x, Language Redirect
+* Build Date: 2011-10-20
+* Requirements: Symphony 2.2.x
 
 ## Description
 
 Ahhh yes... yet another extension in the battle for Multi-Language support!
 This one is more developer centric: it allows you to translate those small words 
-like "Login", "Username" and other small pieces of text that needs translation
+like "Login", "Username" and other pieces of text that needs translation
 but aren't exactly what you would call articles.
 
 ## Requirements
 
-This extension requires Symphony 2.2.x and the Language Redirect extension.
+This extension requires Symphony 2.2.x
 
 ## Installation
 
-1. Download and install the Language Redirect extension
-2. Download the Language Parameters extension and add it to your extensions folder using `languageparameters` as the folder name
-3. Add an XML file in the Manifest folder called `staticresources.xml`
-4. Add parameters to your XML file (look at the Usage section below for more information)
+1. Download the `gettext` extension and add it to your extensions folder using `gettext` as the folder name
+2. Go to the preference screen and choose your parser (defaut = GNU PO);
+3. Add parameters to your resource files (look at the Usage section below for more information)
+4. Include the resources in your pages!
 
 ## Usage
 
-The extension uses a simple XML file in the manifest folder called `staticresources.xml`.
-The schema for this file is:
+The `gettext` extension comes with two flavors: GNU PO file parser and JAVA-style i18n resource bundle property file 
+parser. You can select the parser from the preferences screen.
 
-	<resources>
-		<language code="">
-			<param name="" value="" />
-		</language>
-	</resources>
+### XSLT Parameters or XML Data source
 
-For large amounts of text (don't know if this is the right extension for it, but it is supported), 
-you can create childNodes for the `@name` and `@value` attributes:
+There are two ways of using the resources in your XSLT templates.
+The resources can be made available as XSLT parameters, or they can be added as data source to the page.
 
-	<resources>
-		<language code="">
-			<param>
-				<name></name>
-				<value></value>
-			</param>
-		</language>
-	</resources>
+Please note: it is _not_ recommended to use the XSLT parameters in combination with the
+GNU PO parser. This might not work due to the nature of PO resource identifiers (using complete string instead of key).
 
-You can combine this, by using the `@name` attribute, and the `value` childnode, etc, etc.
-Keep in mind that it will first use the attribute value, and if the attribute does not exist, it will look for the node.
-If there is no attribute and no childnode specified, the extension will throw an error.
+#### XSLT Parameters
 
-Each parameter is added to your frontend as... XSLT parameters!
-So you can get the value in your template by using `$name` (which happens to be the value of the `@name` 
-attribute in your `staticresources.xml` file).
+You can access the parameters in your XSLT by using `$[parameterName]`:
 
-## Caveats
-
-### Language Redirect based
-
-In order to get the parameters for a specific languag code, the extension matches the `@code` attribtue value
-with the value returned by the `LanguageCode` property that is returned by the Language Redirect extension.
-
-So if this returns 'en-us', based on the provided URL `http://example.org/en-us/somepage`, the extension will
-look for the following xpath in the `staticresources.xml` file: `/resources/language[@code='en-us']/param`.
-
-### Default language
-
-If there is no language specified, the extension will look for the default language code as specified in 
-the Language Redirect preferences. If there is no default, no parameters will be resolved.
-
-If the extension does not find parameters based on the language code returned by the Language Redirect extension, 
-it will not resolve any parameters.
-
-### Missing Parameters
+	<xsl:value-of select="$MyString" />
 
 Keep in mind that missing parameters might cause your Symphony instance to throw XSLT errors!
-To avoid this, you can either make sure your `staticresources.xml` file is up-to-date, or add
+To avoid this, you can either make sure your resources files are up-to-date, or add
 
 	<xsl:param name="name" />
 
 to the top of your XSLT pages, to ensure that the parameter is declared.
 
+#### Data Source
+
+You can access the resources by including the `gettext resources` data source to your page from the page
+configuration screen in Symphony. A `resources` element will be added to your page output XML.
+
+You can retrieve resources values in your XSLT templates like you would do with other XML nodes, but
+you can also choose to use the `key()` function in combination with the `xsl:key` element.
+
+GNU PO:
+
+	<xsl:key name="resources" match="/data/resources/resource[@regionCode='$regionCode']/context[@name=$context]/item" use="msgid" />
+	<xsl:value-of select="key('resources','My Resource String')/msgstr" />
+
+Please note that you will need to declare the `$regionCode` and `$context` parameters in your XSLT template.
+Please read the sections below and the PO specifications for more information on the parameters values.
+
+i18n:
+
+	<xsl:key name="resources" match="/data/resources/resource[@regionCode='$regionCode']/item" use="@name" />
+	<xsl:value-of select="key('resources','MyString')" />
+
+Please note that you will need to declare the `$regionCode` parameter in your XSLT template.
+Please read the sections below and the PO specifications for more information on the parameters values.
+
+### GNU PO Parser
+
+This parser is based on the GNU PO format specifications that can be found 
+(here)[http://www.gnu.org/software/gettext/manual/gettext.html#PO-Files].
+ 
+All resources files must be located in the folder `[Root] > manifest > resources`.
+This folder will be created by the extension during the installation.
+
+#### PO Format
+
+It is important that you read the specifications before using the PO parser.
+The most basic implementation of a PO translation block is:
+
+     white-space
+     #  translator-comments
+     #. extracted-comments
+     #: reference...
+     #, flag...
+     #| msgid previous-untranslated-string
+     msgid untranslated-string
+     msgstr translated-string
+
+Please note: the `white-space` before the comments is mandatory!
+This means you will always need to start your document with a line break.
+
+#### PO files naming convention
+
+It is imperitive that the file name convention is strictly enforced
+This is due to the fact that the file name includes information on
+language-code, country-code and file encoding that is required for 
+parsing the file
+
+Default language file:
+	'name.[encoding].po'
+
+	[encoding]: file encoding (default is UTF-8)
+
+Region specific language file:
+	'name.[lc]_[cc].[encoding].po'
+
+	[lc]: language code
+	[cc]: country code
+	[encoding]: file encoding (default is UTF8)
+
+The [lc] and [cc] values will be used to construct the Region Code.
+This will also be made available in the gettext data source.
+
+Example:	Language-code is 'nl' and Country-Code is 'NL'.
+			The Region Code will be 'nl-NL'
+Example:	Language-code is 'de' and Country-Code is empty.
+			The Region Code will be 'de-de'
+Example:	Language-code is empty and Country-Code is 'uk'.
+			The Region Code will be 'uk'
+
+
+### I18N Property Files
+
+JAVA-Style property files consist of a line-seperated list of key/value pairs.
+This parser is based on the JAVA properties format specifications that can be found 
+(here)[http://download.oracle.com/javase/6/docs/api/java/util/Properties.html#load(java.io.Reader)].
+ 
+All resources files must be located in the folder `[Root] > manifest > resources`.
+This folder will be created by the extension during the installation.
+
+#### JAVA Property file Format
+
+It is important that you read the specifications before using the i18n parser.
+The most basic implementation of a JAVA property file:
+
+	MyString=A very interesting story about tax benefits and the development of cross-country skiing in the late 19th century.
+
+Please note: You do not need to use quotes (") around the property value.
+
+#### I18n files naming convention
+It is imperitive that the file name convention is strictly enforced
+This is due to the fact that the file name includes information on
+language-code, country-code and file encoding that is required for
+parsing the file
+
+Default language file:
+	'name.properties'
+
+Region specific language file:
+	'name.[lc]_[cc].properties'
+
+	[lc]: language code
+	[cc]: country code
+
+The [lc] and [cc] values will be used to construct the Region Code.
+This will also be made available in the gettext data source.
+
+Example:	Language-code is 'nl' and Country-Code is 'NL'.
+			The Region Code will be 'nl-NL'
+Example:	Language-code is 'de' and Country-Code is empty.
+			The Region Code will be 'de-de'
+Example:	Language-code is empty and Country-Code is 'uk'.
+			The Region Code will be 'uk'
+
+## Caveats
+
+### Language selected on query parameters
+
+In order to get the XSLT parameters for a specific region code, the extension uses the value of the `language` and 
+`region` querystring parameters to construct a region code. These values are set by the Language Redirect extension, 
+so you can use this to manage your localization effort, but it is not required.
+
+You can also find other ways to fill these query parameters, or use the Data Source instead of the XSLT parameters,
+which allows you to manually select the proper translation using XPath.
+
+### Default language
+
+Please use the file naming convention for the default language resource file.
+By doing so, the `gettext` extension will always return a value for your translations.
+
+If no default language resource file is available, the XSLT parameters will not be resolved and the Data Source will
+remain empty. This might cause your application to throw errors!
+
 ## Roadmap and Version History
 
-Can be found on the GitHub repository: https://github.com/remie/LanguageParameters/issues
+Can be found on the GitHub repository: https://github.com/remie/gettext/issues
