@@ -59,7 +59,7 @@ you can also choose to use the `key()` function in combination with the `xsl:key
 
 GNU PO:
 
-	<xsl:key name="resources" match="/data/resources/resource[@regionCode='$regionCode']/context[@name=$context]/item" use="msgid" />
+	<xsl:key name="resources" match="/data/resources/resource[@regionCode=$regionCode]/context[@name=$context]/item" use="msgid" />
 	<xsl:value-of select="key('resources','My Resource String')/msgstr" />
 
 Please note that you will need to declare the `$regionCode` and `$context` parameters in your XSLT template.
@@ -67,7 +67,7 @@ Please read the sections below and the PO specifications for more information on
 
 i18n:
 
-	<xsl:key name="resources" match="/data/resources/resource[@regionCode='$regionCode']/item" use="@name" />
+	<xsl:key name="resources" match="/data/resources/resource[@regionCode=$regionCode]/item" use="@name" />
 	<xsl:value-of select="key('resources','MyString')" />
 
 Please note that you will need to declare the `$regionCode` parameter in your XSLT template.
