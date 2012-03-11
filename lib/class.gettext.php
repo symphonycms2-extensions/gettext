@@ -49,6 +49,8 @@
 		 * Default value is False
 		 */
 		public static function addParameters() {
+			if(self::getParserType() == PARSER_TYPE_PO) { return false; }
+			
 			$value = Symphony::Configuration()->get('params','gettext');
 			if($value == 'true') { return true; }
 			return false;
