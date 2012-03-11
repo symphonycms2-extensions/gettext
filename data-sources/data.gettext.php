@@ -85,6 +85,7 @@
 					
 					$content = $resource['content'];
 					foreach($content as $name=>$value) {
+						$value = (empty($value)) ? $name : $value;
 						$itemNode = new XMLElement('item',$value);
 						$itemNode->setAttribute('name',$name);
 						$resourceNode->appendChild($itemNode);

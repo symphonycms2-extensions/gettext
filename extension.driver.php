@@ -4,30 +4,15 @@
 
 	Class extension_gettext extends Extension {
 
-		public function about() {
-			return array(
-				'name'			=> 'gettext',
-				'version'		=> '2.0.0',
-				'release-date'	=> '2011-10-20',
-				'author'		=> array(
-					'name'			=> 'Remie Bolte',
-					'email'			=> 'r.bolte@gmail.com',
-					'website'		=> 'https://github.com/remie/gettext'
-				),
-				'description'	=> 'Brings multilingual resource properties to your XSLT templates'
-			);
-		}
-
 		public function install() {
-			if(is_writable(MANIFEST)) {
-				mkdir(MANIFEST . '/resources/');
-			} else {
+			if(!is_writable(MANIFEST)) {
 				Administration::instance()->Page->pageAlert("The 'Manifest' folder is not writable.");
 				return false;
+			} else if(!file_exists(GETTEXT_ROOT)) {
+				mkdir(GETTEXT_ROOT);
 			}
-			
 		}
-		
+				
 		/*-------------------------------------------------------------------------
 			Delegate
 		-------------------------------------------------------------------------*/
