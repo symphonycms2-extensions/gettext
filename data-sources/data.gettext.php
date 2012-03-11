@@ -76,7 +76,7 @@
 				*/
 			
 			} else if($parser instanceof i18nParser) {
-				
+
 				foreach($resources as $resource) {
 					$resourceNode = new XMLElement('resource');
 					$resourceNode->setAttribute('regionCode', $resource['rc']);
@@ -85,7 +85,14 @@
 					
 					$content = $resource['content'];
 					foreach($content as $name=>$value) {
-						$value = (empty($value)) ? $name : $value;
+						
+						if(empty($value)) {
+							if(isset($resources['']['content'][$name])) {
+								$value = $resources['']['content'][$name];
+							}
+							$value = (empty($value)) ? $name : $value;
+						}
+						
 						$itemNode = new XMLElement('item',$value);
 						$itemNode->setAttribute('name',$name);
 						$resourceNode->appendChild($itemNode);
