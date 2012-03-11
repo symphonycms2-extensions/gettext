@@ -126,6 +126,9 @@
 				
 				$name = trim(substr($line, 0, strpos($line,'=')));
 				$value = trim(substr($line, strpos($line,'=') + 1));
+				
+				if(substr($name,0,1) == '#' || substr($name,0,1) == '!')
+					continue;
 
 				if(substr($line, strlen($line) - 1, 1) == '\\') {
 					$multiline = true;

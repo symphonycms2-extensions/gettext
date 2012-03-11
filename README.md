@@ -1,9 +1,9 @@
 # gettext
 
-* Version: 2.0.0
+* Version: 2.1.0
 * Author: Remie Bolte <http://github.com/remie>
-* Build Date: 2011-10-20
-* Requirements: Symphony 2.2.x
+* Build Date: 2012-03-10
+* Requirements: Symphony 2.3.x
 
 ## Description
 
@@ -14,7 +14,7 @@ but aren't exactly what you would call articles.
 
 ## Requirements
 
-This extension requires Symphony 2.2.x
+This extension requires Symphony 2.3.x
 
 ## Installation
 
